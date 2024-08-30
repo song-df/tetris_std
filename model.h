@@ -10,6 +10,12 @@
 #define BOARD_HEIGHT 20
 #define TILE_SIZE 30
 
+typedef enum {
+    GAME_RUNNING,
+    GAME_PAUSED,
+    GAME_OVER
+} GameState;
+
 typedef struct {
     SDL_Color color;
     bool active;

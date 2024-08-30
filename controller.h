@@ -19,15 +19,16 @@
 	•	Description: Boolean flags corresponding to the player’s input for moving left, right, down, or rotating the current shape.
 	•	Purpose: Track the player’s input and apply the corresponding actions to the current shape during the game update.
  */
+
 typedef struct {
     GameBoard board;
     Renderer renderer;
     bool running;
     bool left, right, down, rotate;
+    GameState state;
 } GameController;
 
 void initGameController(GameController* gc);
-void handleInput(GameController* gc);
 void updateGame(GameController* gc);
 void runGame(GameController* gc);
 

@@ -151,29 +151,23 @@ void renderGameOver(Renderer* r) {
     SDL_DestroyTexture(texture);
 }
 
-void drawBoard(Renderer* r, GameBoard* board, bool gameOver) {
-    // Clear the renderer with the background image
+void drawBoard(Renderer* r, GameBoard* board, GameState state) {
+    // 清空渲染器并绘制背景
     SDL_RenderClear(r->renderer);
-
-    // Render the background
     SDL_RenderCopy(r->renderer, r->background, NULL, NULL);
 
-    // Draw the grid
-    SDL_SetRenderDrawColor(r->renderer, 169, 169, 169, 255);  // Light gray color
-
-    // Vertical grid lines
+    // 绘制网格
+    SDL_SetRenderDrawColor(r->renderer, 169, 169, 169, 255);  // 灰色
     for (int i = 0; i <= BOARD_WIDTH; i++) {
         int x = i * TILE_SIZE;
         SDL_RenderDrawLine(r->renderer, x, 0, x, BOARD_HEIGHT * TILE_SIZE);
     }
-
-    // Horizontal grid lines
     for (int j = 0; j <= BOARD_HEIGHT; j++) {
         int y = j * TILE_SIZE;
         SDL_RenderDrawLine(r->renderer, 0, y, BOARD_WIDTH * TILE_SIZE, y);
     }
 
-    // Draw blocks
+    // 绘制游戏板上的方块
     for (int i = 0; i < BOARD_WIDTH; i++) {
         for (int j = 0; j < BOARD_HEIGHT; j++) {
             if (board->board[i][j].active) {
@@ -182,8 +176,8 @@ void drawBoard(Renderer* r, GameBoard* board, bool gameOver) {
         }
     }
 
-    // Draw current shape
-    if (!gameOver) {
+    // 绘制当前形状
+    if (state == GAME_RUNNING) {
         for (int i = 0; i < board->currentShape.size; i++) {
             for (int j = 0; j < board->currentShape.size; j++) {
                 if (board->currentShape.matrix[i][j]) {
@@ -193,23 +187,31 @@ void drawBoard(Renderer* r, GameBoard* board, bool gameOver) {
         }
     }
 
-    // Draw the next shape on the right side of the game board
+    // 绘制下一个形状
     for (int i = 0; i < board->nextShape.size; i++) {
         for (int j = 0; j < board->nextShape.size; j++) {
             if (board->nextShape.matrix[i][j]) {
-                // Draw next shape with an offset to the right of the game board
                 drawBlock(r, BOARD_WIDTH + 2 + i, 2 + j, board->nextShape.color);
             }
         }
     }
 
-    // Render the score below the next shape
+    // 在下一个形状的下方显示分数
     char scoreText[32];
     snprintf(scoreText, sizeof(scoreText), "Score: %d", board->score);
     renderText(r, scoreText, (BOARD_WIDTH + 2) * TILE_SIZE, (2 + board->nextShape.size + 1) * TILE_SIZE);
 
-    // If the game is over, render the "Game Over" message
-    if (gameOver) {
+    // 在分数下方显示操作提示
+    renderText(r, "Press P to Pause", (BOARD_WIDTH + 2) * TILE_SIZE, (2 + board->nextShape.size + 3) * TILE_SIZE);
+    renderText(r, "Press S to Save", (BOARD_WIDTH + 2) * TILE_SIZE, (2 + board->nextShape.size + 4) * TILE_SIZE);
+
+    // 如果游戏暂停，显示暂停提示
+    if (state == GAME_PAUSED) {
+        renderText(r, "Game Paused", WIDTH / 2 - 50, HEIGHT / 2);
+    }
+
+    // 如果游戏结束，显示 "Game Over" 信息
+    if (state == GAME_OVER) {
         renderGameOver(r);
     }
 

@@ -21,6 +21,6 @@ typedef struct {
 void initRenderer(Renderer* r);
 void cleanupRenderer(Renderer* r);
 void drawBlock(Renderer* r, int x, int y, SDL_Color color);
-void drawBoard(Renderer* r, GameBoard* board, bool gameOver);
+void drawBoard(Renderer* r, GameBoard* board, GameState state);
 void renderText(Renderer* r, const char* text, int x, int y);
 #endif

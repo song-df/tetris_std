@@ -20,22 +20,28 @@ void resetBoard(GameBoard* board) {
 }
 
 bool checkCollision(GameBoard* board, int newX, int newY, Shape* shape) {
+    // Iterate through each cell in the shape's matrix
     for(int i = 0; i < shape->size; i++) {
         for(int j = 0; j < shape->size; j++) {
+            // Check if the current cell of the shape is filled
             if(shape->matrix[i][j]) {
+                // Calculate the corresponding x and y coordinates on the game board
                 int x = newX + i;
                 int y = newY + j;
 
+                // Check if the shape's cell would be outside the game board horizontally or vertically
                 if(x < 0 || x >= BOARD_WIDTH || y >= BOARD_HEIGHT) {
-                    return true;
+                    return true; // Collision detected (out of bounds)
                 }
 
+                // Check if the shape's cell overlaps with an already active block on the board
                 if(y >= 0 && board->board[x][y].active) {
-                    return true;
+                    return true; // Collision detected (overlapping active block)
                 }
             }
         }
     }
+    // No collision detected
     return false;
 }
 
