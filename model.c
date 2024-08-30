@@ -39,17 +39,57 @@ bool checkCollision(GameBoard* board, int newX, int newY, Shape* shape) {
     return false;
 }
 
-void placeShape(GameBoard* board) {
-    for(int i = 0; i < board->currentShape.size; i++) {
-        for(int j = 0; j < board->currentShape.size; j++) {
-            if(board->currentShape.matrix[i][j]) {
+void placeShape(GameBoard *board) {
+    // Place the current shape's blocks into the game board
+    for (int i = 0; i < board->currentShape.size; i++) {
+        for (int j = 0; j < board->currentShape.size; j++) {
+            if (board->currentShape.matrix[i][j]) {
                 int x = board->currentShape.x + i;
                 int y = board->currentShape.y + j;
-                if(y >= 0) {
-                    board->board[x][y] = (Block){ board->currentShape.color, true };
+                if (x >= 0 && x < BOARD_WIDTH && y >= 0 && y < BOARD_HEIGHT) {
+                    board->board[x][y].active = true;
+                    board->board[x][y].color = board->currentShape.color;
                 }
             }
         }
+    }
+
+    // After placing the shape, check for any full lines
+    clearFullLines(board);
+}
+
+void clearFullLines(GameBoard *board) {
+    int fullLines = 0;
+
+    for (int j = 0; j < BOARD_HEIGHT; j++) {
+        bool isFull = true;
+        for (int i = 0; i < BOARD_WIDTH; i++) {
+            if (!board->board[i][j].active) {
+                isFull = false;
+                break;
+            }
+        }
+
+        if (isFull) {
+            // Shift all rows above down by one
+            for (int y = j; y > 0; y--) {
+                for (int x = 0; x < BOARD_WIDTH; x++) {
+                    board->board[x][y] = board->board[x][y - 1];
+                }
+            }
+
+            // Clear the top row
+            for (int x = 0; x < BOARD_WIDTH; x++) {
+                board->board[x][0].active = false;
+            }
+
+            fullLines++;
+        }
+    }
+
+    // Increase the score based on the number of full lines cleared
+    if (fullLines > 0) {
+        board->score += fullLines * 100;  // Example scoring system
     }
 }
 void clearLines(GameBoard* board) {

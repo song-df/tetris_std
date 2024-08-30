@@ -25,6 +25,7 @@ typedef struct {
 typedef struct {
     Block board[BOARD_WIDTH][BOARD_HEIGHT];
     Shape currentShape;
+    Shape nextShape;
     int score;
     int gameLevel;
 } GameBoard;
@@ -35,6 +36,7 @@ void resetBoard(GameBoard* board);
 bool checkCollision(GameBoard* board, int newX, int newY, Shape* shape);
 void placeShape(GameBoard* board);
 void clearLines(GameBoard* board);
+void clearFullLines(GameBoard *board);
 Shape rotateShape(Shape s);
 
 #endif

@@ -5,5 +5,6 @@ int main() {
     initGameController(&gameController);
     runGame(&gameController);
     cleanupRenderer(&gameController.renderer);
+    printf("game exit\n");
     return 0;
 }

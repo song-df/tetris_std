@@ -9,6 +9,7 @@ void initGameController(GameController* gc) {
     srand(time(NULL));
     resetBoard(&gc->board);
     gc->board.currentShape = shapes[rand() % 7];
+    gc->board.nextShape = shapes[rand() % 7];  // Generate the next shape
     gc->board.score = 0;
     initRenderer(&gc->renderer);
     gc->running = true;
@@ -77,9 +78,10 @@ void updateGame(GameController* gc) {
             placeShape(&gc->board);
             clearLines(&gc->board);
             gc->board.currentShape = shapes[rand() % 7];
-            if(checkCollision(&gc->board, gc->board.currentShape.x, gc->board.currentShape.y, &gc->board.currentShape)) {
-                gc->running = false; // Game over
-            }
+            //cancel check at here, and check exit updateGame
+            // if(checkCollision(&gc->board, gc->board.currentShape.x, gc->board.currentShape.y, &gc->board.currentShape)) {
+            //     gc->running = false; // Game over
+            // }
         } else {
             gc->board.currentShape.y++;
         }
@@ -94,10 +96,67 @@ void updateGame(GameController* gc) {
 	•	Return Value: None.
 */
 void runGame(GameController* gc) {
-    while(gc->running) {
-        handleInput(gc);
-        updateGame(gc);
-        drawBoard(&gc->renderer, &gc->board);
-        SDL_Delay(100);
+    bool gameOver = false;
+
+    while (gc->running) {
+        SDL_Event e;
+        while (SDL_PollEvent(&e)) {
+            if (e.type == SDL_QUIT) {
+                gc->running = false;
+            } else if (e.type == SDL_KEYDOWN) {
+                if (!gameOver) {
+                    switch (e.key.keysym.sym) {
+                        case SDLK_LEFT:
+                            gc->left = true;
+                            break;
+                        case SDLK_RIGHT:
+                            gc->right = true;
+                            break;
+                        case SDLK_DOWN:
+                            gc->down = true;
+                            break;
+                        case SDLK_UP:
+                            gc->rotate = true;
+                            break;
+                        case SDLK_ESCAPE:
+                            gc->running = false;
+                            break;
+                    }
+                } else {
+                    switch (e.key.keysym.sym) {
+                        case SDLK_r:  // Restart the game
+                            resetBoard(&gc->board);
+                            gc->board.currentShape = shapes[rand() % 7];
+                            gc->board.nextShape = shapes[rand() % 7];
+                            gc->board.score = 0;
+                            gameOver = false;
+                            break;
+                        case SDLK_q:  // Quit the game
+                            gc->running = false;
+                            break;
+                    }
+                }
+            }
+        }
+
+        //printf("===gc->running:%d\n",gc->running);
+        if (!gameOver) {
+            updateGame(gc);
+            if (checkCollision(&gc->board, gc->board.currentShape.x, gc->board.currentShape.y + 1, &gc->board.currentShape)) {
+                placeShape(&gc->board);  // Place the shape on the board
+                gc->board.currentShape = gc->board.nextShape;
+                gc->board.nextShape = shapes[rand() % 7];
+                if (checkCollision(&gc->board, gc->board.currentShape.x, gc->board.currentShape.y, &gc->board.currentShape)) {
+                    printf("Game Over detected.\n");
+                    gameOver = true;
+                }
+            } else {
+                gc->board.currentShape.y++;  // Move the shape down
+            }
+        }
+
+        drawBoard(&gc->renderer, &gc->board, gameOver);
+        //printf("###gc->running:%d\n",gc->running);
+        SDL_Delay(200);
     }
 }
