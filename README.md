@@ -1,68 +1,131 @@
 ## Tetris Game MVC Flowchart
 
 +------------------------------------+
+
 |           MAIN MODULE              |
+
 | (main.c: Initializes Game Loop)    |
+
 |                                    |
+
 |  1. Initialize GameController      |
+
 |  2. Start Game Loop (runGame)      |
+
 +------------------------------------+
+
                |
+	       
                v
+	       
 +------------------------------------+
+
 |        GAME CONTROLLER MODULE      |
+
 |   (controller.c: Manages Game Flow)|
+
 |                                    |
+
 |  1. Initialize Game (initGameController) |
+
 |     - Initialize GameBoard         |
+
 |     - Initialize Renderer          |
+
 |                                    |
+
 |  2. Game Loop (runGame)            |
+
 |     - Handle Input (handleInput)   |
+
 |     - Update Game State (updateGame)|
+
 |     - Render Game (drawBoard)      |
+
 +------------------------------------+
+
                |
+	       
                v
+	       
 +------------------------------------+
+
 |        INPUT HANDLING              |
+
 |                                    |
+
 |  1. Poll SDL Events                |
+
 |  2. Set Movement Flags             |
+
 |  3. Handle Rotation                |
+
 +------------------------------------+
+
                |
+	       
                v
+	       
 +------------------------------------+
+
 |        GAME LOGIC (MODEL)          |
+
 | (model.c: Manages Game State)      |
+
 |                                    |
+
 |  1. Reset Game Board               |
+
 |  2. Check Collision (checkCollision)|
+
 |  3. Place Shape (placeShape)       |
+
 |  4. Clear Lines (clearLines)       |
+
 |  5. Rotate Shape (rotateShape)     |
+
 +------------------------------------+
+
                |
+	       
                v
+	       
 +------------------------------------+
+
 |        RENDERING (VIEW)            |
+
 |  (view.c: Handles Display)         |
+
 |                                    |
+
 |  1. Initialize Renderer            |
+
 |     - Create SDL Window            |
+
 |     - Create SDL Renderer          |
+
 |     - Load Font for Text           |
+
 |                                    |
+
 |  2. Draw Game Board (drawBoard)    |
+
 |     - Draw Blocks                  |
+
 |     - Draw Current Shape           |
+
 |     - Display Score (renderText)   |
+
 |                                    |
+
 |  3. Clean Up (cleanupRenderer)     |
+
 |     - Close Font                   |
+
 |     - Destroy Window & Renderer    |
+
 +------------------------------------+
+
 
 
 ## Detailed Explanation of the Flowchart:
