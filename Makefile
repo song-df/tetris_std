@@ -3,7 +3,7 @@ LDFLAGS  = `sdl2-config --libs` -lSDL2_ttf -lm
 PROG = tetris
 CXX = gcc
 
-OBJS   = main.o view.o model.o controller.o
+OBJS   = main.o view.o model.o controller.o file.o
 
 # top-level rule to create the program.
 all: $(PROG)

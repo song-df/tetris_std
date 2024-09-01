@@ -14,7 +14,7 @@ void initRenderer(Renderer* r) {
     r->renderer = SDL_CreateRenderer(r->window, -1, 0);
     r->rect.w = r->rect.h = TILE_SIZE;
 
-    r->font = TTF_OpenFont("Inconsolata-Regular.ttf", 40);
+    r->font = TTF_OpenFont("font/Inconsolata-Regular.ttf", 40);
     if (!r->font) {
         printf("Failed to load font: %s\n", TTF_GetError());
         exit(1);
