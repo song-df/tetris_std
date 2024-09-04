@@ -42,7 +42,6 @@ void resetBoard(GameBoard* board);
 bool checkCollision(GameBoard* board, int newX, int newY, Shape* shape);
 void placeShape(GameBoard* board);
 void clearLines(GameBoard* board);
-void clearFullLines(GameBoard *board);
 Shape rotateShape(Shape s);
 
 #endif

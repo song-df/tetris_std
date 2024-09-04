@@ -25,6 +25,7 @@ bool checkCollision(GameBoard* board, int newX, int newY, Shape* shape) {
         for(int j = 0; j < shape->size; j++) {
             // Check if the current cell of the shape is filled
             if(shape->matrix[i][j]) {
+                //printf("new[%d,%d],[%d,%d]\n",newX,newY,i,j);
                 // Calculate the corresponding x and y coordinates on the game board
                 int x = newX + i;
                 int y = newY + j;
@@ -61,43 +62,9 @@ void placeShape(GameBoard *board) {
     }
 
     // After placing the shape, check for any full lines
-    clearFullLines(board);
+    clearLines(board);
 }
 
-void clearFullLines(GameBoard *board) {
-    int fullLines = 0;
-
-    for (int j = 0; j < BOARD_HEIGHT; j++) {
-        bool isFull = true;
-        for (int i = 0; i < BOARD_WIDTH; i++) {
-            if (!board->board[i][j].active) {
-                isFull = false;
-                break;
-            }
-        }
-
-        if (isFull) {
-            // Shift all rows above down by one
-            for (int y = j; y > 0; y--) {
-                for (int x = 0; x < BOARD_WIDTH; x++) {
-                    board->board[x][y] = board->board[x][y - 1];
-                }
-            }
-
-            // Clear the top row
-            for (int x = 0; x < BOARD_WIDTH; x++) {
-                board->board[x][0].active = false;
-            }
-
-            fullLines++;
-        }
-    }
-
-    // Increase the score based on the number of full lines cleared
-    if (fullLines > 0) {
-        board->score += fullLines * 100;  // Example scoring system
-    }
-}
 void clearLines(GameBoard* board) {
     int linesCleared = 0;  // Count how many lines are cleared
 
@@ -151,6 +118,17 @@ Shape rotateShape(Shape s) {
             bool t = temp.matrix[i][j];
             temp.matrix[i][j] = temp.matrix[i][s.size - j - 1];
             temp.matrix[i][s.size - j - 1] = t;
+        }
+    }
+    return temp;
+}
+
+Shape rotateShape_(Shape s) {
+    Shape temp = s;
+    for(int i = 0; i < s.size; i++) {
+        for(int j = s.size-1; j >= 0; j--) {
+            //shape_matrix[i][3-j] = shapetemp[j][i];
+            temp.matrix[i][j] = temp.matrix[3-j][i];
         }
     }
     return temp;
