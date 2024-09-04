@@ -47,6 +47,7 @@ void initGameController(GameController* gc) {
  *
  */
 void updateGame(GameController* gc) {
+    //处理原则，先看看能不能移，如果能移才真实移动。
     if(gc->left && !checkCollision(&gc->board, gc->board.currentShape.x - 1, gc->board.currentShape.y, &gc->board.currentShape)) {
         gc->board.currentShape.x--;
     }
@@ -67,11 +68,13 @@ void updateGame(GameController* gc) {
         if(checkCollision(&gc->board, gc->board.currentShape.x, gc->board.currentShape.y + 1, &gc->board.currentShape)) {
             placeShape(&gc->board);
             clearLines(&gc->board);
-            gc->board.currentShape = shapes[rand() % 7];
+            gc->board.currentShape = gc->board.nextShape;
+            gc->board.nextShape = shapes[rand() % 7];
             //cancel check at here, and check exit updateGame
-            // if(checkCollision(&gc->board, gc->board.currentShape.x, gc->board.currentShape.y, &gc->board.currentShape)) {
-            //     gc->running = false; // Game over
-            // }
+            if(checkCollision(&gc->board, gc->board.currentShape.x, gc->board.currentShape.y, &gc->board.currentShape)) {
+            printf("Game Over detected.\n");
+            gc->state = GAME_OVER;
+            }
         } else {
             gc->board.currentShape.y++;
         }
@@ -139,17 +142,6 @@ void runGame(GameController* gc) {
 
         if (gc->state == GAME_RUNNING) {
             updateGame(gc);
-            if (checkCollision(&gc->board, gc->board.currentShape.x, gc->board.currentShape.y + 1, &gc->board.currentShape)) {
-                placeShape(&gc->board);
-                gc->board.currentShape = gc->board.nextShape;
-                gc->board.nextShape = shapes[rand() % 7];
-                if (checkCollision(&gc->board, gc->board.currentShape.x, gc->board.currentShape.y, &gc->board.currentShape)) {
-                    printf("Game Over detected.\n");
-                    gc->state = GAME_OVER;
-                }
-            } else {
-                gc->board.currentShape.y++;  // 向下移动方块
-            }
         }
 
         drawBoard(&gc->renderer, &gc->board, gc->state);
